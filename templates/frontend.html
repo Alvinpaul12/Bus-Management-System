@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Management System</title>
+</head>
+<body>
+    <h1>Bus Management System</h1>
+
+    <h2>Add Driver</h2>
+    <form action="{{ url_for('add_driver') }}" method="post">
+        <input type="text" name="name" placeholder="Driver Name" required>
+        <button type="submit">Add Driver</button>
+    </form>
+
+    <h2>Add Bus</h2>
+    <form action="{{ url_for('add_bus') }}" method="post">
+        <input type="text" name="number" placeholder="Bus Number" required>
+        <select name="driver" required>
+            {% for driver in drivers %}
+            <option value="{{ driver }}">{{ driver }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Add Bus</button>
+    </form>
+
+    <h2>Add Passenger</h2>
+    <form action="{{ url_for('add_passenger') }}" method="post">
+        <input type="text" name="name" placeholder="Passenger Name" required>
+        <select name="bus" required>
+            {% for bus in buses %}
+            <option value="{{ bus.number }}">{{ bus.number }} (Driver: {{ bus.driver_name or 'None' }})</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Add Passenger</button>
+    </form>
+
+    <h2>Drivers</h2>
+    <ul>
+        {% for driver in drivers %}
+        <li>{{ driver.name }} <a href="{{ url_for('remove_driver', name=driver.name) }}">Remove</a></li>
+        {% endfor %}
+    </ul>
+
+    <h2>Buses</h2>
+    <ul>
+        {% for bus in buses %}
+        <li>Bus {{ bus.number }} - Driver: {{ bus.driver_name or 'None' }} 
+            <a href="{{ url_for('remove_bus', number=bus.number) }}">Remove</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Passengers</h2>
+    <ul>
+        {% for passenger in passengers %}
+        <li>{{ passenger.name }} - Bus: {{ passenger.bus_number }}
+            <a href="{{ url_for('remove_passenger', name=passenger.name) }}">Remove</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

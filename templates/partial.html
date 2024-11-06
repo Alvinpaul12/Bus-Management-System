@@ -1,0 +1,57 @@
+<h2>Add Bus</h2>
+<form action="{{ url_for('add_bus') }}" method="post">
+    <input type="text" name="number" placeholder="Bus Number" required>
+    <button type="submit">Add Bus</button>
+</form>
+
+<h2>Add Driver</h2>
+<form action="{{ url_for('add_driver') }}" method="post">
+    <input type="text" name="name" placeholder="Driver Name" required>
+    <select name="bus" required>
+        {% for bus in buses %}
+        <option value="{{ bus.number }}">{{ bus.number }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Add Driver</button>
+</form>
+
+<h2>Add Passenger</h2>
+<form action="{{ url_for('add_passenger') }}" method="post">
+    <input type="text" name="name" placeholder="Passenger Name" required>
+    <select name="bus" required>
+        {% for bus in buses %}
+        <option value="{{ bus.number }}">{{ bus.number }} {% if bus.driver %}(Driver: {{ bus.driver }}){% else %}(No driver){% endif %}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Add Passenger</button>
+</form>
+
+<h2>Buses</h2>
+<ul>
+    {% for bus in buses %}
+    <li>
+        Bus {{ bus.number }} - Driver: {% if bus.driver %}{{ bus.driver }}{% else %}No driver assigned{% endif %}
+        <a href="{{ url_for('remove_bus', number=bus.number) }}" data-action="remove">[Remove]</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<h2>Drivers</h2>
+<ul>
+    {% for driver in drivers %}
+    <li>
+        {{ driver }}
+        <a href="{{ url_for('remove_driver', name=driver) }}" data-action="remove">[Remove]</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<h2>Passengers</h2>
+<ul>
+    {% for passenger in passengers %}
+    <li>
+        {{ passenger.name }} - Bus: {{ passenger.bus }}
+        <a href="{{ url_for('remove_passenger', name=passenger.name) }}" data-action="remove">[Remove]</a>
+    </li>
+    {% endfor %}
+</ul>
