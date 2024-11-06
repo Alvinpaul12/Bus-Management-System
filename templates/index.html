@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Bus Management System</title>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            color: #2d3436;
+        }
+
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .list-container {
+            margin-top: 2rem;
+        }
+
+        .list-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .remove-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .error {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .success {
+            background-color: #dcfce7;
+            color: #16a34a;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .bus-passengers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .bus-group {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .bus-group h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .passenger-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .passenger-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 0.8rem;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .passenger-item:hover {
+            transform: translateX(5px);
+        }
+
+        .passenger-item .remove-btn {
+            background: none;
+            color: #e74c3c;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .passenger-item .remove-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .passenger-count {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        /* Empty state styling */
+        .no-passengers {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .bus-passengers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1><i class="fas fa-bus"></i> Bus Management System</h1>
+        <div class="user-info">
+            <span>Welcome, {{ session.username }}!</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="error">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="dashboard-grid">
+            <!-- Add Bus Card -->
+            <div class="card">
+                <h2><i class="fas fa-bus"></i> Add Bus</h2>
+                <form action="{{ url_for('add_bus') }}" method="post">
+                    <div class="form-group">
+                        <input type="text" name="number" placeholder="Bus Number" required>
+                    </div>
+                    <button type="submit"><i class="fas fa-plus"></i> Add Bus</button>
+                </form>
+            </div>
+
+            <!-- Add Driver Card -->
+            <div class="card">
+                <h2><i class="fas fa-id-card"></i> Add Driver</h2>
+                <form action="{{ url_for('add_driver') }}" method="post">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Driver Name" required>
+                    </div>
+                    <div class="form-group">
+                        <select name="bus">
+                            <option value="">Select Bus (Optional)</option>
+                            {% for bus in buses %}
+                            <option value="{{ bus.number }}">{{ bus.number }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit"><i class="fas fa-plus"></i> Add Driver</button>
+                </form>
+            </div>
+
+            <!-- Add Passenger Card -->
+            <div class="card">
+                <h2><i class="fas fa-user"></i> Add Passenger</h2>
+                <form action="{{ url_for('add_passenger') }}" method="post">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Passenger Name" required>
+                    </div>
+                    <div class="form-group">
+                        <select name="bus" required>
+                            {% for bus in buses %}
+                            <option value="{{ bus.number }}">{{ bus.number }} (Driver: {{ bus.driver_name or 'None' }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit"><i class="fas fa-plus"></i> Add Passenger</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Current Lists -->
+        <div class="list-container">
+            <div class="card">
+                <h2><i class="fas fa-list"></i> Current Buses</h2>
+                {% for bus in buses %}
+                <div class="list-item">
+                    <span>Bus {{ bus.number }} - Driver: {{ bus.driver_name or 'None' }}</span>
+                    <a href="{{ url_for('remove_bus', number=bus.number) }}" 
+                       class="remove-btn"
+                       onclick="return confirm('Are you sure you want to remove this bus?')">
+                       <i class="fas fa-trash"></i> Remove
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-list"></i> Current Drivers</h2>
+                {% for driver in drivers %}
+                <div class="list-item">
+                    <span>{{ driver.name }}</span>
+                    <a href="{{ url_for('remove_driver', name=driver.name) }}" 
+                       class="remove-btn"
+                       onclick="return confirm('Are you sure you want to remove this driver?')">
+                       <i class="fas fa-trash"></i> Remove
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-users"></i> Passengers by Bus</h2>
+                
+                {% set buses_with_passengers = {} %}
+                {% for bus in buses %}
+                    {% set passengers_in_bus = [] %}
+                    {% for passenger in passengers %}
+                        {% if passenger.bus_number == bus.number %}
+                            {% set _ = passengers_in_bus.append(passenger) %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if passengers_in_bus %}
+                        {% set _ = buses_with_passengers.update({bus.number: passengers_in_bus}) %}
+                    {% endif %}
+                {% endfor %}
+
+                <div class="bus-passengers-grid">
+                    {% for bus_number, bus_passengers in buses_with_passengers.items() %}
+                    <div class="bus-group">
+                        <h3>Bus {{ bus_number }}</h3>
+                        <div class="passenger-list">
+                            {% for passenger in bus_passengers %}
+                            <div class="passenger-item">
+                                <span>{{ passenger.name }}</span>
+                                <a href="{{ url_for('remove_passenger', name=passenger.name) }}" 
+                                   class="remove-btn"
+                                   onclick="return confirm('Are you sure you want to remove this passenger?')">
+                                   <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="passenger-count">
+                            Total Passengers: {{ bus_passengers|length }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterPassengers(searchTerm) {
+            const busGroups = document.querySelectorAll('.bus-group');
+            
+            busGroups.forEach(busGroup => {
+                const passengers = busGroup.querySelectorAll('.passenger-item');
+                let visiblePassengers = 0;
+                
+                passengers.forEach(passenger => {
+                    const passengerName = passenger.querySelector('span').textContent.toLowerCase();
+                    if (passengerName.includes(searchTerm.toLowerCase())) {
+                        passenger.style.display = '';
+                        visiblePassengers++;
+                    } else {
+                        passenger.style.display = 'none';
+                    }
+                });
+                
+                // Hide entire bus group if no matching passengers
+                busGroup.style.display = visiblePassengers > 0 ? '' : 'none';
+            });
+        }
+
+        // Add search input
+        const searchBox = document.createElement('div');
+        searchBox.className = 'search-box';
+        searchBox.innerHTML = `
+            <input type="text" 
+                   placeholder="Search passengers..." 
+                   style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 5px;">
+        `;
+        
+        const busPassengersGrid = document.querySelector('.bus-passengers-grid');
+        busPassengersGrid.parentNode.insertBefore(searchBox, busPassengersGrid);
+        
+        searchBox.querySelector('input').addEventListener('input', (e) => filterPassengers(e.target.value));
+    </script>
+</body>
+</html>
